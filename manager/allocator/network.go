@@ -1,9 +1,11 @@
 package allocator
 
 import (
+	"bytes"
 	"fmt"
 	"time"
 
+	"encoding/gob"
 	"github.com/docker/go-events"
 	"github.com/docker/swarmkit/api"
 	"github.com/docker/swarmkit/log"
@@ -593,6 +595,23 @@ func (a *Allocator) taskCreateNetworkAttachments(t *api.Task, s *api.Service) {
 			attachment := api.NetworkAttachment{Network: n}
 			attachment.Aliases = append(attachment.Aliases, na.Aliases...)
 			attachment.Addresses = append(attachment.Addresses, na.Addresses...)
+			func(src map[string]string, dst *map[string]string) error {
+				var buf bytes.Buffer
+				enc := gob.NewEncoder(&buf)
+				dec := gob.NewDecoder(&buf)
+
+				err := enc.Encode(src)
+
+				if err != nil {
+					return err
+				}
+
+				err = dec.Decode(&dst)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(na.DriverOpt, &attachment.DriverOpt)
 
 			networks = append(networks, &attachment)
 		}

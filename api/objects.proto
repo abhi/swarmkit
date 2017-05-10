@@ -255,6 +255,9 @@ message NetworkAttachment {
 
 	// List of aliases by which a task is resolved in a network
 	repeated string aliases = 3;
+
+	//A Map of all the driver options for this network
+	map<string,string> driverOpt = 4;
 }
 
 message Network {
