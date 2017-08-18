@@ -584,7 +584,10 @@ func (na *cnmNetworkAllocator) allocateVIP(vip *api.Endpoint_VirtualIP) error {
 	}
 
 	for _, poolID := range localNet.pools {
-		ip, _, err := ipam.RequestAddress(poolID, addr, nil)
+		opts := map[string]string{
+			"com.docker.network.serial": "true",
+		}
+		ip, _, err := ipam.RequestAddress(poolID, addr, opts)
 		if err != nil && err != ipamapi.ErrNoAvailableIPs && err != ipamapi.ErrIPOutOfRange {
 			return errors.Wrap(err, "could not allocate VIP from IPAM")
 		}

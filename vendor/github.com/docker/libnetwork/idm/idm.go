@@ -38,7 +38,7 @@ func (i *Idm) GetID() (uint64, error) {
 	if i.handle == nil {
 		return 0, errors.New("ID set is not initialized")
 	}
-	ordinal, err := i.handle.SetAny()
+	ordinal, err := i.handle.SetAny(false)
 	return i.start + ordinal, err
 }
 
@@ -65,7 +65,7 @@ func (i *Idm) GetIDInRange(start, end uint64) (uint64, error) {
 		return 0, errors.New("Requested range does not belong to the set")
 	}
 
-	ordinal, err := i.handle.SetAnyInRange(start-i.start, end-i.start)
+	ordinal, err := i.handle.SetAnyInRange(start-i.start, end-i.start, false)
 
 	return i.start + ordinal, err
 }
